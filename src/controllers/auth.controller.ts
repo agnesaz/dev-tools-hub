@@ -62,7 +62,7 @@ export const loginAdmin = async (req: Request, res: Response): Promise<void> => 
       username: admin.username,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET || 'your-secret-key', {
+    const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret-key', {
       expiresIn: '24h',
     });
 

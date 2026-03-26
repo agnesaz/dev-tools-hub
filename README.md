@@ -39,7 +39,7 @@ Edit `.env`:
 NODE_ENV=development
 PORT=3001
 MONGODB_URI=mongodb://localhost:27017/dev-tools-hub
-JWT_SECRET=your-secret-key
+JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzQ3MjQxNTM1ODZmODdhYzQ0ZWU1NSIsImlhdCI6MTc3NDQ4MjMzNywiZXhwIjoxNzc0NDg1OTM3fQ.239-GF0zZG5uf24TZ6ADqhlNeJGcqiOcdJE5X65UX7M
 ```
 
 ### Run Locally
@@ -207,7 +207,7 @@ After `npm run seed`:
 | NODE_ENV | development | App environment |
 | PORT | 3001 | Server port |
 | MONGODB_URI | mongodb://localhost:27017/dev-tools-hub | Database URL |
-| JWT_SECRET | your-secret-key | JWT signing key |
+| JWT_SECRET | secret-key | JWT signing key |
 
 ## npm Scripts
 

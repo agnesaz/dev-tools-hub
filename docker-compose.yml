@@ -1,34 +1,27 @@
 services:
   mongo:
     image: mongo:7
-    container_name: dev-tools-mongo
-    restart: always
     ports:
       - "27018:27017"
-    environment:
-      MONGO_INITDB_DATABASE: dev-tools-hub
     volumes:
       - mongo-data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    environment:
+      MONGO_INITDB_DATABASE: dev-tools-hub
 
   app:
     build: .
-    container_name: dev-tools-app
-    restart: unless-stopped
     ports:
       - "3001:3001"
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       PORT: 3001
       MONGODB_URI: mongodb://mongo:27017/dev-tools-hub
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzQ3MjQxNTM1ODZmODdhYzQ0ZWU1NSIsImlhdCI6MTc3NDQ4MjMzNywiZXhwIjoxNzc0NDg1OTM3fQ.239-GF0zZG5uf24TZ6ADqhlNeJGcqiOcdJE5X65UX7M
     depends_on:
-      mongo:
-        condition: service_healthy
+      - mongo
+    volumes:
+      - .:/app
+      - /app/node_modules
 
 volumes:
   mongo-data:

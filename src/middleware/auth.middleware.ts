@@ -9,7 +9,7 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret-key') as any;
     (req as any).adminId = decoded.id;
     next();
   } catch (error) {
