@@ -1,88 +1,89 @@
 # Developer Tools Hub 🛠️
 
-A simple, modern landing page for managing developer tools and SaaS links. Admins can add, edit, and delete links with a beautiful dashboard.
+A lightweight backend service for centralizing your team's developer tools and links in one place. Quickly add, edit, and manage resources through a secure admin dashboard.
 
 ## 🚀 Quick Start
 
+## Features
+
+- 🔐 JWT Authentication (admin login)
+- 📝 Create, read, update, delete links
+- 🎨 Beautiful landing page showing all links
+- 🛡️ Secure admin panel
+- 🐳 Docker & Kubernetes ready
+- 📦 MongoDB database
+
+## Quick Start
+
 ### Prerequisites
-- Node.js v18+
-- Docker & Docker Compose (optional)
-- MongoDB (if running locally)
+- Node.js 18+
+- MongoDB 
+- Docker
 
 ### Installation
 
 ```bash
-# Clone and install
-git clone <repository-url>
+git clone <repo-url>
 cd dev-tools-hub
 npm install
+```
 
-# Setup environment
+### Setup Environment
+
+```bash
 cp .env.example .env
+```
 
-# Create admin user
-npm run seed
+Edit `.env`:
+```env
+NODE_ENV=development
+PORT=3001
+MONGODB_URI=mongodb://localhost:27017/dev-tools-hub
+JWT_SECRET=your-secret-key
 ```
 
 ### Run Locally
 
 ```bash
-npm run dev       # Development mode with hot-reload
-npm run build     # Build TypeScript
-npm start         # Production mode
+# Development (with hot reload)
+npm run dev
+
+# Production
+npm run build
+npm start
 ```
 
-Visit:
-- **Landing Page:** http://localhost:3001
-- **Admin Panel:** http://localhost:3001/admin.html
+## Run seed
+```bash
+# Create admin user
+npm run seed:admin
+#Create links
+npm run seed:links
+```
 
-## 🐳 Docker Deployment
+Visit: http://localhost:3001
+
+## Using Docker
 
 ```bash
 # Start with Docker Compose
 docker-compose up -d
 
-# Stop containers
+# Stop
 docker-compose down
 
 # View logs
 docker-compose logs -f app
 ```
 
-## 📋 Default Credentials
-
-After running `npm run seed`:
-- **Username:** admin
-- **Password:** secret123
-
-
-## ⚙️ Environment Variables
-
-Create a `.env` file:
-
-```env
-NODE_ENV=development
-PORT=3001
-MONGODB_URI=mongodb://mongo:27017/dev-tools-hub
-JWT_SECRET=your-super-secret-key-here
-```
-
-## 📡 API Documentation
+## API Endpoints
 
 ### Base URL
 ```
-http://localhost:3001/
+http://localhost:3001/api
 ```
 
-### Authentication
-All admin endpoints require a JWT token in the header:
-```
-Authorization: Bearer <your-token>
-```
-
-### Endpoints
-
-#### Login
+### Login
 ```bash
 POST /auth/login
 Content-Type: application/json
@@ -91,35 +92,31 @@ Content-Type: application/json
   "username": "admin",
   "password": "admin123"
 }
-```
 
 Response:
-```json
 {
   "success": true,
   "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token": "eyJhbGciOiJIUzI1NiIs...",
     "admin": { "id": "...", "username": "admin" }
   }
 }
 ```
 
-#### Get All Links (Public)
+### Get All Links (Public)
 ```bash
 GET /links
-```
 
 Response:
-```json
 {
   "success": true,
   "data": [
     {
-      "_id": "507f1f77bcf86cd799439011",
+      "_id": "...",
       "title": "GitHub",
       "url": "https://github.com",
       "icon": "🐙",
-      "description": "Version control platform",
+      "description": "Version control",
       "category": "Development",
       "createdAt": "2024-01-01T12:00:00Z"
     }
@@ -127,7 +124,7 @@ Response:
 }
 ```
 
-#### Create Link (Admin Only)
+### Create Link (Admin Only)
 ```bash
 POST /links
 Authorization: Bearer <token>
@@ -137,198 +134,215 @@ Content-Type: application/json
   "title": "GitHub",
   "url": "https://github.com",
   "icon": "🐙",
-  "description": "Version control platform",
+  "description": "Version control",
   "category": "Development"
 }
 ```
 
-#### Update Link (Admin Only)
+### Update Link (Admin Only)
 ```bash
 PUT /links/:id
 Authorization: Bearer <token>
-Content-Type: application/json
 
 {
-  "title": "GitHub Updated",
-  "description": "New description"
+  "title": "GitHub Updated"
 }
 ```
 
-#### Delete Link (Admin Only)
+### Delete Link (Admin Only)
 ```bash
 DELETE /links/:id
 Authorization: Bearer <token>
 ```
 
-## 🧪 Test the API
-
-### Using cURL
+## Testing
 
 ```bash
-# Login
-TOKEN=$(curl -s -X POST http://localhost:3001/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}' \
-  | jq -r '.data.token')
+# Run all tests
+npm test
 
-# Get all links
-curl http://localhost:3001/api/links
+# Watch mode
+npm test:watch
 
-# Create link
-curl -X POST http://localhost:3001/api/links \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{
-    "title": "GitHub",
-    "url": "https://github.com",
-    "icon": "🐙",
-    "category": "Development"
-  }'
-
-# Update link
-curl -X PUT http://localhost:3001/api/links/507f1f77bcf86cd799439011 \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{"title": "GitHub Updated"}'
-
-# Delete link
-curl -X DELETE http://localhost:3001/api/links/507f1f77bcf86cd799439011 \
-  -H "Authorization: Bearer $TOKEN"
+# Coverage
+npm test:coverage
 ```
 
-### Using Postman
-
-1. Create a new collection
-2. Add the endpoints above
-3. In the "Auth" tab, set type to "Bearer Token"
-4. Paste your JWT token from login response
-5. Test each endpoint
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-dev-tools-hub/
-├── src/
-│   ├── config/db.ts              # MongoDB connection
-│   ├── controllers/
-│   │   ├── auth.controller.ts    # Login
-│   │   └── link.controller.ts    # CRUD for links
-│   ├── middleware/auth.middleware.ts  # JWT verification
-│   ├── models/
-│   │   ├── admin.model.ts        # Admin schema
-│   │   └── link.model.ts         # Link schema
-│   ├── routes/
-│   │   ├── auth.routes.ts        # /auth endpoints
-│   │   └── link.routes.ts        # /links endpoints
-│   ├── scripts/createAdmin.ts    # Create admin user
-│   ├── utils/
-│   │   ├── logger.ts             # Logging
-│   │   └── validation.ts         # Input validation
-│   ├── app.ts                    # Express app
-│   └── server.ts                 # Server startup
-├── public/
-│   ├── index.html                # Landing page
-│   └── admin.html                # Admin dashboard
-├── Dockerfile
-├── docker-compose.yml
-├── .env.example
-├── package.json
-└── README.md
+src/
+├── config/db.ts              # Database connection
+├── controllers/
+│   ├── auth.controller.ts    # Login logic
+│   └── link.controller.ts    # CRUD operations
+├── middleware/
+│   └── auth.middleware.ts    # JWT verification
+├── models/
+│   ├── admin.model.ts        # Admin schema
+│   └── link.model.ts         # Link schema
+├── routes/
+│   ├── auth.routes.ts
+│   └── link.routes.ts
+├── app.ts                    # Express setup
+└── server.ts                 # Server startup
+
+public/
+├── index.html               # Landing page
+└── admin.html              # Admin dashboard
 ```
 
-## 🔒 Security
+## Default Credentials
 
-- ✅ Passwords hashed with bcryptjs
-- ✅ JWT authentication for admin endpoints
-- ✅ URL and input validation
-- ✅ Error handling without exposing sensitive data
-- ✅ MongoDB injection prevention
+After `npm run seed`:
+- **Username:** admin
+- **Password:** admin123
 
-**Production Checklist:**
-- [ ] Change `JWT_SECRET` to a random 32+ character string
-- [ ] Use strong admin password
-- [ ] Enable HTTPS/TLS
-- [ ] Set `NODE_ENV=production`
-- [ ] Use environment-specific `.env` files
-- [ ] Enable MongoDB authentication
+⚠️ Change immediately after first login!
 
-## ❓ Troubleshooting
+## Environment Variables
 
-**MongoDB Connection Error**
-```
-Error: connect ECONNREFUSED 127.0.0.1:27017
-```
-- Start MongoDB: `brew services start mongodb-community`
-- Or use Docker: `docker-compose up -d`
+| Variable | Default | Description |
+|----------|---------|-------------|
+| NODE_ENV | development | App environment |
+| PORT | 3001 | Server port |
+| MONGODB_URI | mongodb://localhost:27017/dev-tools-hub | Database URL |
+| JWT_SECRET | your-secret-key | JWT signing key |
 
-**Port Already in Use**
-```
-Error: listen EADDRINUSE :::3001
-```
-- Change `PORT` in `.env`
-- Or kill process: `lsof -ti:3001 | xargs kill -9`
-
-**Invalid Token Error**
-- Make sure to include `Authorization: Bearer <token>` header
-- Token might be expired (24 hours)
-- Re-login to get a new token
-
-## 📝 npm Commands
+## npm Scripts
 
 ```bash
-npm run dev       # Start dev server (hot-reload)
-npm run build     # Build TypeScript to JavaScript
-npm start         # Start production server
-npm run seed      # Create admin user
+npm run dev          # Start dev server (hot reload)
+npm run build        # Build TypeScript
+npm start            # Start production server
+npm run seed         # Create admin user
+npm test             # Run tests
+npm test:watch       # Watch mode
+npm test:coverage    # Coverage report
 ```
 
-## 📚 Tech Stack
+## Tech Stack
 
 - **Node.js** - JavaScript runtime
 - **Express.js** - Web framework
 - **TypeScript** - Type safety
-- **MongoDB** - Database
-- **Mongoose** - MongoDB ODM
+- **MongoDB** - NoSQL database
+- **Mongoose** - Database ODM
 - **JWT** - Authentication
 - **bcryptjs** - Password hashing
 - **Docker** - Containerization
 
-## 📄 Data Models
+## Security
 
-**Link:**
-```typescript
-{
-  title: string,           // Required
-  url: string,             // Required, valid URL
-  icon: string,            // Optional, emoji or URL
-  description: string,     // Optional
-  category: string,        // Optional
-  createdAt: Date,
-  updatedAt: Date
-}
+- ✅ Passwords hashed with bcryptjs
+- ✅ JWT token authentication
+- ✅ Input validation
+- ✅ Error handling
+- ✅ MongoDB injection prevention
+
+**Production Tips:**
+- Change JWT_SECRET to random 32+ chars
+- Use strong admin password
+- Enable HTTPS
+- Update dependencies regularly
+
+## Troubleshooting
+
+### Port already in use
+```bash
+# Change in .env
+PORT=3002
 ```
 
-**Admin:**
-```typescript
-{
-  username: string,        // Required, unique
-  password: string,        // Required, bcrypt hashed
-  createdAt: Date,
-  updatedAt: Date
-}
+### MongoDB connection error
+```bash
+# Start MongoDB
+brew services start mongodb-community
+
+# Or use Docker
+docker-compose up -d
 ```
 
-## 🤝 Contributing
+### Tests failing
+```bash
+# Clear cache and reinstall
+rm -rf node_modules
+npm install
+npm test
+```
 
-1. Fork the repo
-2. Create feature branch: `git checkout -b feature/my-feature`
-3. Commit: `git commit -m 'Add feature'`
-4. Push: `git push origin feature/my-feature`
-5. Open Pull Request
+## Deployment
 
-## 📄 License
+### Docker
+```bash
+docker build -t dev-tools-hub:1.0.0 .
+docker run -p 3001:3001 dev-tools-hub:1.0.0
+```
 
-MIT License
+### Kubernetes
+```bash
+kubectl apply -f k8s/
+```
+
+See `DEPLOYMENT.md` for detailed guide.
+
+## Testing API with cURL
+
+```bash
+# Login
+curl -X POST http://localhost:3001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+
+# Get links
+curl http://localhost:3001/api/links
+
+# Create link
+curl -X POST http://localhost:3001/api/links \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title":"GitHub",
+    "url":"https://github.com",
+    "icon":"🐙"
+  }'
+```
+
+## File Structure
+
+```
+dev-tools-hub/
+├── src/                    # Source code
+├── public/                 # Frontend files
+├── k8s/                    # Kubernetes manifests
+├── .github/workflows/      # CI/CD pipelines
+├── Dockerfile              # Container image
+├── docker-compose.yml      # Local setup
+├── package.json
+├── tsconfig.json
+├── jest.config.js
+├── .gitignore
+├── .env.example
+└── README.md
+```
+
+## Useful Links
+
+- [Express.js Docs](https://expressjs.com/)
+- [MongoDB Docs](https://docs.mongodb.com/)
+- [JWT Guide](https://jwt.io/)
+- [Docker Docs](https://docs.docker.com/)
+- [Kubernetes Docs](https://kubernetes.io/docs/)
+
+## Support
+
+- 📧 Email: agnesazeqiri404@gmail.com
+- 🐛 Issues: Open a GitHub issue
+
+## License
+
+MIT
+
 ---
 
 **Version:** 1.0.0  
