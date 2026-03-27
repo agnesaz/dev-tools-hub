@@ -1,16 +1,3 @@
-// import { Router } from 'express';
-// import { getLinks, createLink, updateLink, deleteLink } from '../controllers/link.controller';
-// import { protect } from '../middleware/auth.middleware';
-
-// const router = Router();
-
-// router.get('/', getLinks);          // public
-// router.post('/', protect, createLink);
-// router.put('/:id', protect, updateLink);
-// router.delete('/:id', protect, deleteLink);
-
-// export default router;
-
 import { Router } from 'express';
 import * as linkController from '../controllers/link.controller';
 import { protect } from '../middleware/auth.middleware';
