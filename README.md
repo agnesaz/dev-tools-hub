@@ -1,6 +1,6 @@
 # Developer Tools Hub 🛠️
 
-A lightweight backend service for centralizing your team's developer tools and links in one place. Quickly add, edit, and manage resources through a secure admin dashboard.
+A lightweight backend service for centralizing your team's developer tools and links in one place, enabling secure resource management through an admin dashboard. The implementation focuses on backend architecture, API design, security, database structure, and a ready Docker setup. The client side is intentionally minimal and AI-assisted, serving only to demonstrate API interactions.
 
 ## 🚀 Quick Start
 
